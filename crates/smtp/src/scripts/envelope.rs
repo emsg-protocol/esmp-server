@@ -19,10 +19,13 @@ impl SessionData {
     pub fn apply_envelope_modification(&mut self, envelope: Envelope, value: String) {
         match envelope {
             Envelope::From => {
-                let (address, address_lcase, domain) = if value.contains('@') {
-                    let address_lcase = value.to_lowercase();
-                    let domain = address_lcase.domain_part().into();
-                    (value, address_lcase, domain)
+                let (address, address_lcase, domain) = if value.contains('#') {
+                    if let Some(address_lcase) = utils::sanitize_emsg_address(&value) {
+                        let domain = address_lcase.split('#').nth(1).unwrap_or("").to_string();
+                        (value, address_lcase, domain)
+                    } else {
+                        return;
+                    }
                 } else if value.is_empty() {
                     (String::new(), String::new(), String::new())
                 } else {
@@ -44,21 +47,22 @@ impl SessionData {
                 }
             }
             Envelope::To => {
-                if value.contains('@') {
-                    let address_lcase = value.to_lowercase();
-                    let domain = address_lcase.domain_part().into();
-                    if let Some(rcpt_to) = self.rcpt_to.last_mut() {
-                        rcpt_to.address = value;
-                        rcpt_to.address_lcase = address_lcase;
-                        rcpt_to.domain = domain;
-                    } else {
-                        self.rcpt_to.push(SessionAddress {
-                            address: value,
-                            address_lcase,
-                            domain,
-                            flags: 0,
-                            dsn_info: None,
-                        });
+                if value.contains('#') {
+                    if let Some(address_lcase) = utils::sanitize_emsg_address(&value) {
+                        let domain = address_lcase.split('#').nth(1).unwrap_or("").to_string();
+                        if let Some(rcpt_to) = self.rcpt_to.last_mut() {
+                            rcpt_to.address = value;
+                            rcpt_to.address_lcase = address_lcase.clone();
+                            rcpt_to.domain = domain;
+                        } else {
+                            self.rcpt_to.push(SessionAddress {
+                                address: value,
+                                address_lcase,
+                                domain,
+                                flags: 0,
+                                dsn_info: None,
+                            });
+                        }
                     }
                 }
             }

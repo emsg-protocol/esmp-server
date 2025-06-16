@@ -369,16 +369,16 @@ impl ServerCertVerifier for DummyVerifier {
     }
 }
 
-// Basic email sanitizer
-pub fn sanitize_email(email: &str) -> Option<String> {
-    let mut result = String::with_capacity(email.len());
+// Basic EMSG address sanitizer (user#domain.com)
+pub fn sanitize_emsg_address(address: &str) -> Option<String> {
+    let mut result = String::with_capacity(address.len());
     let mut found_local = false;
     let mut found_domain = false;
     let mut last_ch = char::from(0);
 
-    for ch in email.chars() {
+    for ch in address.chars() {
         if !ch.is_whitespace() {
-            if ch == '@' {
+            if ch == '#' {
                 if !result.is_empty() && !found_local {
                     found_local = true;
                 } else {

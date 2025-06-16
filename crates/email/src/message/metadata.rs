@@ -337,12 +337,10 @@ impl MessageMetadata {
                         .map(|hdr| Header {
                             value: if matches!(
                                 &hdr.name,
-                                HeaderName::Subject
-                                    | HeaderName::From
+                                HeaderName::From
                                     | HeaderName::To
                                     | HeaderName::Cc
                                     | HeaderName::Date
-                                    | HeaderName::Bcc
                                     | HeaderName::ReplyTo
                                     | HeaderName::Sender
                                     | HeaderName::Comments
@@ -416,11 +414,7 @@ impl ArchivedMessageMetadataPart {
         })
     }
 
-    pub fn subject(&self) -> Option<&str> {
-        self.headers
-            .header_value(&ArchivedHeaderName::Subject)
-            .and_then(|header| header.as_text())
-    }
+    // Removed subject() for EMSG protocol
 
     pub fn date(&self) -> Option<DateTime> {
         self.headers
@@ -428,6 +422,7 @@ impl ArchivedMessageMetadataPart {
             .and_then(|header| header.as_datetime())
             .map(|dt| dt.into())
     }
+    // TODO: Add group_id and user#domain.com support for EMSG
 
     pub fn message_id(&self) -> Option<&str> {
         self.headers
