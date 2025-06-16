@@ -1,3 +1,8 @@
+Purpose: “Custom decentralized messaging server implementing the EMSG Protocol (user#domain.com)”
+
+Note that it's a fork of Stalwart, adapted for JSON-based decentralized messaging
+
+
 <p align="center">
     <a href="https://stalw.art">
     <img src="./img/logo-red.svg" height="150">
