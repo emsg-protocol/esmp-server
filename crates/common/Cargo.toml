@@ -73,6 +73,8 @@ rkyv = { version = "0.8.10", features = ["little_endian"] }
 indexmap = "2.7.1"
 tinyvec = "1.9.0"
 compact_str = { version = "0.9.0", features = ["rkyv", "serde"] }
+url = "2.4"  # Add url dependency for validation
+thiserror = "1.0"  # Add thiserror for better error handling
 
 [target.'cfg(unix)'.dependencies]
 privdrop = "0.5.3"
